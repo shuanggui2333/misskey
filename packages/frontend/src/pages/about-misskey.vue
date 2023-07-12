@@ -46,12 +46,11 @@
 							{{ i18n.ts._aboutMisskey.donate }}
 							<template #suffix>Patreon</template>
 						</FormLink>
-					</div>
-				</FormSection>
-				<FormSection>
-					<template #label><Mfm text="🍬"/> 喵窝的守护者</template>
-					<div class="_formLinks">
-						<FormLink to="https://nya.one/@Candinya" external>@Candinya</FormLink>
+						<FormLink to="https://docs.nya.one/sponsor/" external>
+							<template #icon><i class="ti ti-pig-money"></i></template>
+							赞助喵窝
+							<template #suffix><Mfm text="🪙"/></template>
+						</FormLink>
 					</div>
 				</FormSection>
 				<FormSection>
@@ -85,6 +84,15 @@
 					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
+					<template #label><Mfm text="🍬"/> 喵窝的开发者</template>
+					<div :class="$style.contributors">
+						<a href="https://nya.one/@Candinya" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/20502130?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@Candinya</span>
+						</a>
+					</div>
+				</FormSection>
+				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
 					<div :class="$style.patronsWithIcon">
 						<div v-for="patron in patronsWithIcon" :class="$style.patronWithIcon">
@@ -96,17 +104,6 @@
 						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
-				</FormSection>
-				<FormSection>
-					<template #label>Special thanks</template>
-					<div class="_gaps" style="text-align: center;">
-						<div>
-							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img width="200" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="200" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
-						</div>
-					</div>
 				</FormSection>
 			</div>
 		</MkSpacer>
