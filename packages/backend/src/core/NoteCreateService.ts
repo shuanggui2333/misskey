@@ -243,7 +243,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (this.isSensitive(data, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
-				data.visibility = 'home';
+				// User are banned from creating public notes
+				data.visibility = 'followers';
 			}
 		}
 
@@ -570,12 +571,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply) {
 				// 通知
 				if (data.reply.userHost === null) {
-					const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
-						userId: data.reply.userId,
-						threadId: data.reply.threadId ?? data.reply.id,
+					const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+						where: {
+							userId: data.reply.userId,
+							threadId: data.reply.threadId ?? data.reply.id,
+						},
 					});
 
-					if (!threadMuted) {
+					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
 						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
 
@@ -672,7 +675,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Register to search database
 		this.index(note);
 	}
-	
+
 	@bindThis
 	private isSensitive(note: Option, sensitiveWord: string[]): boolean {
 		if (sensitiveWord.length > 0) {
@@ -712,12 +715,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
-			const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
-				userId: u.id,
-				threadId: note.threadId ?? note.id,
+			const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+				where: {
+					userId: u.id,
+					threadId: note.threadId ?? note.id,
+				},
 			});
 
-			if (threadMuted) {
+			if (isThreadMuted) {
 				continue;
 			}
 
@@ -758,7 +763,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private index(note: Note) {
 		if (note.text == null && note.cw == null) return;
-		
+
 		this.searchService.indexNote(note);
 	}
 
